@@ -66,7 +66,7 @@ from google.auth import default
 auth.authenticate_user()
 creds, _ = default()
 gc = gspread.authorize(creds)
-worksheet = gc.open('deep1').sheet1
+worksheet = gc.open('deep').sheet1
 data = worksheet.get_all_values()
 dataset1=pd.DataFrame(data[1:],columns=data[0])
 dataset1=dataset1.astype({'input':'float'})
