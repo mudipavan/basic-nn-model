@@ -49,24 +49,84 @@ Evaluate the model with the testing data.
 
 ## PROGRAM
 
-Include your code here
+```
+## Importing modules
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+
+## Authenticate & Create data frame using data in sheets
+
+from google.colab import auth
+import gspread
+from google.auth import default
+auth.authenticate_user()
+creds, _ = default()
+gc = gspread.authorize(creds)
+worksheet = gc.open('deep1').sheet1
+data = worksheet.get_all_values()
+dataset1=pd.DataFrame(data[1:],columns=data[0])
+dataset1=dataset1.astype({'input':'float'})
+dataset1=dataset1.astype({'output':'float'})
+dataset1.head()
+
+## Assign X & Y Values
+
+x = dataset1[['input']].values
+y = dataset1[['output']].values
+x
+
+## Normalize the values and split the data
+
+x_train,x_test,y_train,y_test = train_test_split(x,y,test_size = 0.33,random_state = 33)
+Scaler = MinMaxScaler()
+Scaler.fit(x_train)
+x_train1 = Scaler.transform(x_train)
+## Create a neural network and train it.
+ai_brain=Sequential([
+    Dense(8,activation='relu'),
+    Dense(10,activation='relu'),
+    Dense(1)
+])
+ai_brain.compile(optimizer='rmsprop',loss='mse')
+ai_brain.fit(x_train1,y_train,epochs=2000)
+
+## Plot the loss
+
+loss_df = pd.DataFrame(ai_brain.history.history)
+loss_df.plot()
+
+## Predict for some value
+
+ai_brain.evaluate(x_test1,y_test)
+
+x_test1 = Scaler.transform(x_test)
+x_n1 = [[30]]
+x_n1_1 = Scaler.transform(x_n1)
+ai_brain.predict(x_n1_1)
+```
 
 ## Dataset Information
 
-Include screenshot of the dataset
+![d-1-1](https://github.com/mudipavan/basic-nn-model/assets/94828517/96431d5d-2504-4e9f-8eb0-26012d1c69cb)
 
 ## OUTPUT
 
 ### Training Loss Vs Iteration Plot
 
-Include your plot here
+![d-1-2](https://github.com/mudipavan/basic-nn-model/assets/94828517/5283dac7-9681-4dca-9839-d89fa0c21ead)
 
 ### Test Data Root Mean Squared Error
 
-Find the test data root mean squared error
+![d-1-3](https://github.com/mudipavan/basic-nn-model/assets/94828517/d12862cc-5edd-49c5-ab7c-4d779f504039)
 
 ### New Sample Data Prediction
 
-Include your sample input and output here
+![d-1-4](https://github.com/mudipavan/basic-nn-model/assets/94828517/068d9676-42c1-42b8-b53f-634ddfd5a271)
 
 ## RESULT
+
+Therefore We successfully developed a neural network regression model for the given dataset.
